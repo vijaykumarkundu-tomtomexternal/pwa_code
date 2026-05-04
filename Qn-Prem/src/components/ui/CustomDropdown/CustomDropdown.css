@@ -1,0 +1,19 @@
+/* Override ant css */
+
+.custom-dropdown .ant-select-selector {
+    color: var(--primary-color);
+    font-weight: 800;
+    padding-left: 8px;
+  }
+  
+  .custom-dropdown .ant-select-arrow {
+    font-size: 16px;
+  }
+  .custom-dropdown-icon {
+    transition: transform 0.3s ease;
+  }
+  
+  .custom-dropdown-icon.rotate {
+    transform: rotate(180deg);
+    color: var(--primary-color);
+  }

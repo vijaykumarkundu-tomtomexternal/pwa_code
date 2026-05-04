@@ -1,0 +1,1 @@
+QN means Quality Notification which is nothing but Non-Conformance of a dimension in the drawing. It is used track the defect from the manufactured part.

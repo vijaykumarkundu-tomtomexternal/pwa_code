@@ -1,0 +1,14 @@
+.ant-segmented-item {
+    transition: red 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+  .ant-segmented-item-selected {
+    background-color: red;
+  }
+  
+  .ant-segmented-thumb {
+    background-color: red;
+  }
+  
+  /* .ant-segmented-item.ant-segmented-item-selected {
+      color: red;
+    } */

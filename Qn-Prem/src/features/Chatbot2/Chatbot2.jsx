@@ -1,0 +1,639 @@
+import { assets } from "@/assets";
+import { useEffect, useRef, useState } from "react";
+import { qnAPI } from "../../api";
+import "./Chatbot2.css";
+import { useSpeechSynthesis } from "./useSpeechSynthesis";
+import { formatDate, formatDateTime, formatTime } from "@/utils/formatDate";
+import useSpeechRecognition from "./useSpeechRecognition";
+
+const hintQuestions = [
+  "What is different type of examine ?",
+  "What are different types of limits ?",
+  "What is serviceable limit for front arm diameter ?",
+];
+
+const RefreshIcon = ({ onClick }) => {
+  return (
+    <svg
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="20.583"
+      height="16"
+      viewBox="0 0 20.583 16"
+    >
+      <path
+        id="Path_11745"
+        data-name="Path 11745"
+        d="M18.65,8.35l-2.79,2.79a.5.5,0,0,0,.35.86H18a6,6,0,0,1-6,6,5.823,5.823,0,0,1-2.25-.44.961.961,0,0,0-1.04.23,1,1,0,0,0,.34,1.64A7.828,7.828,0,0,0,12,20a8,8,0,0,0,8-8h1.79a.5.5,0,0,0,.35-.85L19.35,8.36a.492.492,0,0,0-.7-.01ZM6,12a6,6,0,0,1,6-6,5.823,5.823,0,0,1,2.25.44.961.961,0,0,0,1.04-.23,1,1,0,0,0-.34-1.64A7.828,7.828,0,0,0,12,4a8,8,0,0,0-8,8H2.21a.5.5,0,0,0-.35.85l2.79,2.79a.5.5,0,0,0,.71,0l2.79-2.79A.5.5,0,0,0,7.79,12Z"
+        transform="translate(-1.708 -4)"
+        fill="#888f98"
+      />
+    </svg>
+  );
+};
+
+const CopyIcon = ({ onClick }) => {
+  return (
+    <svg
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="17.498"
+      height="17.5"
+      viewBox="0 0 17.498 17.5"
+    >
+      <g
+        id="Group_173867"
+        data-name="Group 173867"
+        transform="translate(-770.25 -558.243)"
+      >
+        <path
+          id="Path_11744"
+          data-name="Path 11744"
+          d="M94.853,50.957h4.112V39.993H88V44.1"
+          transform="translate(688.034 519)"
+          fill="none"
+          stroke="#888f98"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+        />
+        <rect
+          id="Rectangle_152187"
+          data-name="Rectangle 152187"
+          width="11"
+          height="11"
+          transform="translate(771 563.993)"
+          fill="none"
+          stroke="#888f98"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+        />
+      </g>
+    </svg>
+  );
+};
+
+const NewChatIcon = ({ onClick }) => {
+  return (
+    <svg
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="38"
+      height="38"
+      viewBox="0 0 38 38"
+    >
+      <g id="f4e6c48081088db7efd7accaceb80f94" transform="translate(-2 -2)">
+        <path
+          id="Path_11741"
+          data-name="Path 11741"
+          d="M21,2A19,19,0,0,0,4.472,30.377L2.1,37.5a1.9,1.9,0,0,0,2.4,2.4l7.122-2.374A19,19,0,1,0,21,2Z"
+          transform="translate(0)"
+          fill="#1677ff"
+        />
+        <path
+          id="Path_11742"
+          data-name="Path 11742"
+          d="M11,25.945V7h3.858V25.945Z"
+          transform="translate(8.071 4.528)"
+          fill="#fff"
+          fill-rule="evenodd"
+        />
+        <path
+          id="Path_11743"
+          data-name="Path 11743"
+          d="M25.945,14.858H7V11H25.945Z"
+          transform="translate(4.528 8.071)"
+          fill="#fff"
+          fill-rule="evenodd"
+        />
+      </g>
+    </svg>
+  );
+};
+
+const RemoveIcon = ({ onClick }) => {
+  return (
+    <svg
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="19.045"
+      height="24.835"
+      viewBox="0 0 19.045 24.835"
+    >
+      <path
+        id="da086273b974cb595139babd4da17772"
+        d="M24.2,12.193,23.8,24.3a3.988,3.988,0,0,1-4,3.857H12.2a3.988,3.988,0,0,1-4-3.853L7.8,12.193a1,1,0,0,1,2-.066l.4,12.11a2,2,0,0,0,2,1.923h7.6a2,2,0,0,0,2-1.927l.4-12.106a1,1,0,0,1,2,.066Zm1.323-4.029a1,1,0,0,1-1,1H7.478a1,1,0,0,1,0-2h3.1a1.276,1.276,0,0,0,1.273-1.148,2.991,2.991,0,0,1,2.984-2.694h2.33a2.991,2.991,0,0,1,2.984,2.694,1.276,1.276,0,0,0,1.273,1.148h3.1a1,1,0,0,1,1,1Zm-11.936-1h4.828a3.3,3.3,0,0,1-.255-.944,1,1,0,0,0-.994-.9h-2.33a1,1,0,0,0-.994.9,3.3,3.3,0,0,1-.256.944Zm1.007,15.151V13.8a1,1,0,0,0-2,0v8.519a1,1,0,0,0,2,0Zm4.814,0V13.8a1,1,0,0,0-2,0v8.519a1,1,0,0,0,2,0Z"
+        transform="translate(-6.478 -3.322)"
+        fill="#888f98"
+      />
+    </svg>
+  );
+};
+
+const FullWindowIcon = ({ onClick }) => {
+  return (
+    <svg
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="20.58"
+      height="20.58"
+      viewBox="0 0 20.58 20.58"
+    >
+      <path
+        id="Path_11563"
+        data-name="Path 11563"
+        d="M20,0c.72.72,0,10,0,10L16.25,6.25,12.5,10,10,7.5l3.75-3.75L10,0S19.28-.72,20,0ZM7.5,10,10,12.5,6.25,16.25,10,20s-9.415.585-10,0S0,10,0,10l3.75,3.75Z"
+        transform="translate(0.26 0.32)"
+        fill="#fff"
+      />
+    </svg>
+  );
+};
+
+const MidWindowIcon = ({ onClick }) => {
+  return (
+    <svg
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="20.58"
+      height="20.58"
+      viewBox="0 0 20.58 20.58"
+    >
+      <path
+        id="Path_11740"
+        data-name="Path 11740"
+        d="M18.008,0,20.58,2.573,16.721,6.431,20.58,10.29s-9.849.441-10.29,0S10.29,0,10.29,0l3.859,3.859ZM10.219,10.367c.815.815.071,10.213.071,10.213L6.431,16.721,2.573,20.58,0,18.008l3.859-3.859L0,10.29S9.4,9.553,10.219,10.367Z"
+        fill="#fff"
+      />
+    </svg>
+  );
+};
+
+const MinimizeIcon = ({ onClick }) => {
+  return (
+    <svg
+      style={{ cursor: "pointer" }}
+      onClick={onClick}
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="2.667"
+      viewBox="0 0 16 2.667"
+    >
+      <path
+        id="Path_11562"
+        data-name="Path 11562"
+        d="M7.333,19H20.667a1.333,1.333,0,0,1,0,2.667H7.333a1.333,1.333,0,1,1,0-2.667Z"
+        transform="translate(-6 -19)"
+        fill="#fff"
+      />
+    </svg>
+  );
+};
+
+const CopyToClipboard = ({ text }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 sec
+    });
+  };
+
+  return (
+    <div>
+      {/* <button onClick={handleCopy}>Copy</button> */}
+      <CopyIcon onClick={handleCopy} />
+      {copied && (
+        <span style={{ marginLeft: "10px", fontSize: "12px" }}>Copied!</span>
+      )}
+    </div>
+  );
+};
+
+const SpeechRecognizerIcon = ({ active }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 27.449"
+    >
+      <path
+        style={{ fill: active ? "blue" : "" }}
+        id="Path_11564"
+        data-name="Path 11564"
+        d="M15.078,19.336A4.328,4.328,0,0,0,19.412,15V6.334a4.334,4.334,0,1,0-8.668,0V15A4.328,4.328,0,0,0,15.078,19.336ZM23.616,15A1.442,1.442,0,0,0,22.2,16.23a7.228,7.228,0,0,1-14.245,0,1.446,1.446,0,0,0-2.86.419A10.1,10.1,0,0,0,13.633,25v3a1.445,1.445,0,1,0,2.889,0V25a10.1,10.1,0,0,0,8.538-8.35A1.443,1.443,0,0,0,23.616,15Z"
+        transform="translate(-5.079 -2)"
+        fill="#888f98"
+      />
+    </svg>
+  );
+};
+
+const ChatHeader = ({
+  title,
+  onClickMinimise,
+  onClickFullWindow,
+  onClickMidWindow,
+  fullwidth,
+  initial = false,
+}) => (
+  <div className={`chat-header ${initial ? "initial" : ""}`}>
+    <div className="chat-header-logo">
+      <img
+        src={initial ? assets.chatbotIcon : assets.chatbotIcon2}
+        alt="chatbotIcon"
+      />
+    </div>
+    <div className="chat-header-info">
+      <h3>{title ?? "AI Assistant"}</h3>
+      <p>
+        {fullwidth
+          ? "You can ask me anything related to this QN's"
+          : "You can ask me anything..."}
+      </p>
+    </div>
+    <div className="chat-header-actions">
+      {fullwidth ? (
+        <MidWindowIcon onClick={onClickMidWindow} />
+      ) : (
+        <>
+          <MinimizeIcon onClick={onClickMinimise} />
+          <FullWindowIcon onClick={onClickFullWindow} />
+        </>
+      )}
+    </div>
+  </div>
+);
+
+const Message = ({ sender, text, images = [], initial, showAvatars, regenerate }) => (
+  <div className={`chat-message ${sender === "You" ? "user" : "bot"}`}>
+    {showAvatars &&
+      (sender === "You" ? null : (
+        <img
+          src={assets.chatbotIcon2}
+          alt="chatbotIcon"
+          className="avatar-icon"
+        />
+      ))}
+    <div className="message-content">
+      <div className="text" dangerouslySetInnerHTML={{ __html: text }} />
+      {
+        images && Array.isArray(images) && images.length > 0 && (
+          <div className="message-images">
+            {images.map((image, index) => (
+              <img 
+                key={index}
+                style={{
+                  width: '100%', 
+                  marginTop: index > 0 ? '10px' : '0',
+                  borderRadius: '8px'
+                }} 
+                src={image} 
+                alt={`Response image ${index + 1}`}
+                onError={(e) => {
+                  console.error('Failed to load image:', image);
+                  e.target.style.display = 'none';
+                }}
+              />
+            ))}
+          </div>
+        )
+      }
+      <div className="message-content-bottom">
+        <div className="timestamp">{formatTime(new Date())}</div>
+        {sender === "Bot" && !initial ? (
+          <div className="message-content-bottom-actions">
+            <div title="Copy">
+              <CopyToClipboard text={text} />
+            </div>
+            <div title="regenerate response">
+              <RefreshIcon onClick={regenerate} />
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  </div>
+);
+const ChatBody = ({
+  messages,
+  isTyping,
+  showAvatars,
+  chatBoxRef,
+  hintMessages,
+  handleHintMessage,
+  regenerate,
+}) => (
+  <div className="chat-body" ref={chatBoxRef}>
+    <div className="chat-body-date">{formatDate(new Date())}</div>
+    {messages.map((msg, index) => (
+      <Message
+        key={index}
+        {...msg}
+        showAvatars={showAvatars}
+        regenerate={() => regenerate(messages[index - 1].text)}
+      />
+    ))}
+    {messages?.length === 1 && (
+      <HintMessageList hints={hintMessages} onClickHint={handleHintMessage} />
+    )}
+    {isTyping && <TypingIndicator showAvatars={showAvatars} />}
+  </div>
+);
+const HintMessageList = ({ hints, onClickHint }) => (
+  <div className="hints">
+    {hints.map((q, i) => (
+      <p key={i} onClick={() => onClickHint(q)} className="hint-item">
+        {q}
+      </p>
+    ))}
+  </div>
+);
+
+const ChatFooter = ({
+  input,
+  setInput,
+  handleSend,
+  enableVoiceInput,
+  isListening,
+  startListening,
+  resetChat,
+  toggleListening,
+}) => (
+  <>
+    <div className="chat-footer">
+      <div className="chat-input">
+        <div className="chat-footer-newchat" title="New Chat">
+          <NewChatIcon onClick={resetChat} />
+        </div>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend(input)}
+          placeholder="Type your message here..."
+          required
+        />
+        {enableVoiceInput && (
+          <button onClick={toggleListening}>
+            <SpeechRecognizerIcon active={isListening} />
+          </button>
+        )}
+        <button disabled={!input} onClick={() => handleSend(input)}>
+          ➤
+        </button>
+      </div>
+    </div>
+  </>
+);
+
+const TypingIndicatorLoader = () => (
+  <div className="typing-indicator">
+    <span className="dot"></span>
+    <span className="dot"></span>
+    <span className="dot"></span>
+  </div>
+);
+
+const TypingIndicator = ({ showAvatars }) => (
+  <div className="typing-indicator">
+    {showAvatars && (
+      <img
+        src={assets.chatbotIcon2}
+        alt="chatbotIcon"
+        className="avatar-icon"
+      />
+    )}
+    <div className="message-content">
+      <TypingIndicatorLoader />
+    </div>
+  </div>
+);
+const ChatHistory = ({ history, clearHistory }) => {
+  return (
+    <div className="chat-history">
+      <div className="chat-history-header">
+        <h3 className="chat-history-header-title">History</h3>
+        <RemoveIcon onClick={clearHistory} />
+      </div>
+      <hr className="chat-history-hr" />
+      <div className="chat-history-message">
+        {history.map((ele, idx) => (
+          <div className="chat-history-message-content" key={idx}>
+            <div className="chat-history-message-content-user">{ele.req}</div>
+            <p>{ele.res}</p>
+            <div className="chat-history-message-content-date">
+              {formatDateTime(ele.date)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const Chatbot2 = ({
+  title,
+  enableSpeech = false,
+  enableVoiceInput = true,
+  showAvatars = true,
+  greetingMessage = "welcome. We are glad to serve you. How we can help you today!",
+  username = "User",
+  hintMessages = hintQuestions,
+  QN,
+}) => {
+  const [messages, setMessages] = useState([]);
+
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(false);
+  const [fullwidth, setFullwidth] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [prevTranscript, setPrevTranscript] = useState("");
+
+  const chatBoxRef = useRef(null);
+
+  const {
+    transcript,
+    isListening,
+    error,
+    startListening,
+    stopListening,
+    resetTranscript,
+    toggleListening,
+  } = useSpeechRecognition();
+
+  const { speak } = useSpeechSynthesis(enableSpeech);
+
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTo({
+        top: chatBoxRef.current.scrollHeight,
+        behaviour: "smooth",
+      });
+    }
+  }, [messages, isTyping]);
+
+  useEffect(() => {
+    setMessages([
+      {
+        sender: "Bot",
+        text: `<b>Hi ${username},</b> ${greetingMessage}`,
+        initial: true,
+      },
+    ]);
+  }, [greetingMessage, username]);
+
+  const addMessage = (newMessage) => {
+    setMessages((prev) => [...prev, newMessage]);
+  };
+  const addHistory = (newHistory) => {
+    setHistory((prev) => [...prev, newHistory]);
+  };
+
+  const handleSend = async (customInput) => {
+    if (!customInput?.trim()) return;
+
+    const userMessage = { sender: "You", text: customInput, initial: false };
+    addMessage(userMessage);
+    setInput("");
+    setIsTyping(true);
+
+    const botReply = await getBotResponse(customInput);
+    setIsTyping(false);
+
+    const botMessage = { sender: "Bot", text: botReply[0], images: botReply[1] || [], initial: false };
+    addMessage(botMessage);
+    const history = { req: customInput, res: botReply, date: new Date() };
+    addHistory(history);
+    speak(botReply);
+  };
+
+  const getBotResponse = async (message) => {
+    // return fakeBackendResponse(message);
+
+    try {
+      const res = await qnAPI.qnQuery({ qn: QN, question: message });
+      const data = res.data?.response;
+      if (!data) {
+        throw new Error("No response received from the bot.");
+      }
+      
+      let resp = [data];
+      let images = [];
+      
+      // Handle single image, multiple images, or no images
+      if (res.data?.image) {
+        if (Array.isArray(res.data.image)) {
+          // Multiple images
+          images = res.data.image;
+        } else {
+          // Single image
+          images = [res.data.image];
+        }
+      }
+      
+      resp.push(images);
+      return resp;
+    } catch (error) {
+      console.error("Error getting bot response:", error);
+      return ["Sorry, I couldn't process your request at the moment. Please check your connection and try again.", []];
+    }
+  };
+
+  const handleHintMessage = (msg) => {
+    setInput(msg);
+    handleSend(msg);
+  };
+
+  const resetChat = () => {
+    setMessages([
+      {
+        sender: "Bot",
+        text: `<b>Hi ${username},</b> ${greetingMessage}`,
+        initial: true,
+      },
+    ]);
+  };
+  const clearHistory = () => {
+    setHistory([]);
+  };
+
+  useEffect(() => {
+    if (transcript && transcript !== prevTranscript) {
+      handleSend(transcript);
+      stopListening();
+      setPrevTranscript(transcript);
+    }
+  }, [transcript, prevTranscript]);
+
+  return (
+    <div
+      className={`chat-container ${showChatbot ? "show-chatbot" : ""} ${
+        fullwidth ? "overlay fullwidth" : ""
+      }`}
+    >
+      {!showChatbot && (
+        <button
+          className="chatbot-toggler"
+          onClick={() => setShowChatbot((prev) => !prev)}
+        >
+          {/* <span>💬</span> */}
+          <span>
+            <img
+              src={assets.chatbotIcon}
+              alt="chatbotIcon"
+              width="100%"
+              height="100%"
+            />
+          </span>
+          <span>&#10006;</span>
+        </button>
+      )}
+      <div className="chat-popup">
+        <ChatHeader
+          title={title}
+          fullwidth={fullwidth}
+          initial={messages.length === 1}
+          onClickMinimise={() => setShowChatbot((prev) => !prev)}
+          onClickFullWindow={() => setFullwidth((prev) => !prev)}
+          onClickMidWindow={() => setFullwidth((prev) => !prev)}
+        />
+        <ChatBody
+          messages={messages}
+          isTyping={isTyping}
+          showAvatars={showAvatars}
+          chatBoxRef={chatBoxRef}
+          hintMessages={hintMessages}
+          handleHintMessage={handleHintMessage}
+          regenerate={handleSend}
+        />
+        {fullwidth && (
+          <ChatHistory history={history} clearHistory={clearHistory} />
+        )}
+        <ChatFooter
+          input={input}
+          setInput={setInput}
+          handleSend={handleSend}
+          enableVoiceInput={enableVoiceInput}
+          startListening={startListening}
+          hintMessages={hintMessages}
+          handleHintMessage={handleHintMessage}
+          resetChat={resetChat}
+          isListening={isListening}
+          toggleListening={toggleListening}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default Chatbot2;

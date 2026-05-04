@@ -1,0 +1,34 @@
+=== CURRENT QN 9999974200 CONTEXT ===
+It reads the non-confermence document which is a diviation from the normal define drawings and specifications.
+QN: 9999974200
+Part Number: 123GKN0001
+MQI: 140.6
+Long Text: Defect long text 1
+Short Text: Short Text 1
+Defect Code: Z130
+Drawing Revision: 
+Status: analyse
+
+=== HISTORICAL QN CONTEXT (2 QNs) ===
+
+--- Historical QN 1234935188 ---
+It reads the non-confermence document which is a diviation from the normal define drawings and specifications.
+QN: 1234935188
+Part Number: 123GKN0001
+MQI: 140.6
+Long Text: Details description of non-confirmance 1
+Short Text: DIM    0.34100 -    0.35100
+Defect Code: Z130
+Drawing Revision: Z
+
+
+--- Historical QN 1234993994 ---
+It reads the non-confermence document which is a diviation from the normal define drawings and specifications.
+QN: 1234993994
+Part Number: 123GKN0001
+MQI: 140.6
+Long Text: Details description of non-confirmance 2
+Short Text: DIM    0.34100 -    0.35100
+Defect Code: Z130
+Drawing Revision: Z
+

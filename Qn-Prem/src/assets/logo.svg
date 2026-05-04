@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="175" height="42" viewBox="0 0 175 42">
+  <g id="Group_173281" data-name="Group 173281" transform="translate(-20 -29)">
+    <g id="Group_173279" data-name="Group 173279" transform="translate(-1 3)">
+      <path id="Path_11441" data-name="Path 11441" d="M20.9,2V44a21.117,21.117,0,0,1,0-42Z" transform="translate(19 24)" fill="#383838"/>
+      <path id="Path_11443" data-name="Path 11443" d="M28.472,28.424V47.3A21.073,21.073,0,0,0,47.309,28.424Z" transform="translate(15.691 20.697)" fill="#f2993c"/>
+      <path id="Path_11442" data-name="Path 11442" d="M28.472,2V20.879H47.309A21.092,21.092,0,0,0,28.472,2Z" transform="translate(15.691 24)" fill="#733cf2"/>
+    </g>
+    <g id="Group_173278" data-name="Group 173278" transform="translate(9 6)">
+      <path id="cyient-logo-vector" d="M23.4,276.42a4.24,4.24,0,0,1,4.244-4.257,4.5,4.5,0,0,1,3.61,1.791l2.177-2.039a7.44,7.44,0,0,0-5.787-2.714,7.234,7.234,0,0,0-.165,14.467,7.445,7.445,0,0,0,6.048-2.852l-2.2-2.012a4.57,4.57,0,0,1-3.679,1.888A4.251,4.251,0,0,1,23.4,276.42m20.474,1.226,5.594-8.074H46.04l-3.624,5.442-3.624-5.442H35.308l5.608,8.1v5.649h2.962v-5.676Zm8.473,5.663h2.976v-13.75H52.351v13.75Zm8.2,0h10V280.5h-7.1v-8.115h7.1v-2.811h-10Zm6.916-4.974a1.936,1.936,0,1,0-1.929-1.943,1.949,1.949,0,0,0,1.929,1.943m17.071,4.974h2.632v-13.75H84.26v8.749l-6.531-8.749H74.891v13.75H77.8v-9.024Zm18.517-10.926v-2.811H91.025v2.811h4.533v10.926h2.976V272.383Z" transform="translate(46.6 -241.199)" fill="#363640"/>
+      <text id="QN_Automation" data-name="QN Automation" transform="translate(67 59)" fill="#383838" font-size="13" font-family="Montserrat" font-weight="600"><tspan x="0" y="0">QN AUTOMATION</tspan></text>
+    </g>
+  </g>
+</svg>

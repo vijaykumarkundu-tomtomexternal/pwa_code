@@ -1,0 +1,14 @@
+  <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+          >
+            <path
+              id="play-circle-svgrepo-com"
+              d="M12,22A10,10,0,1,0,2,12,10,10,0,0,0,12,22Zm-1.307-6.154,4.72-2.787a1.25,1.25,0,0,0,0-2.118l-4.72-2.787A1.142,1.142,0,0,0,9,9.213v5.574A1.142,1.142,0,0,0,10.693,15.846Z"
+              transform="translate(-2 -2)"
+              fill="#2bc840"
+              fill-rule="evenodd"
+            />
+          </svg>
